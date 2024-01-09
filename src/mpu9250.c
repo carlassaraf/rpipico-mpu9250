@@ -3,6 +3,18 @@
 // Estructura global para el MPU9250
 static mpu9250_t _mpu;
 
+// Estructura de configuracion del MPU9250
+static mpu9250_settings_t _settings = {
+    .accel_fs_sel = A16G,
+    .gyro_fs_sel = G2000DPS,
+    .mag_output_bits = M16BITS,
+    .fifo_sample_sate = SMPL_200HZ,
+    .gyro_fchoice = 0x03,
+    .gyro_dlpf_cfg = GYRO_DLPF_41HZ,
+    .accel_fchoice = 0x01,
+    .accel_dlpf_cfg = ACCEL_DLPF_45HZ
+};
+
 /**
  * @brief Escribe un byte por I2C
  * @param addr direccion del dispositivo
@@ -58,7 +70,6 @@ static inline mpu9250_status_t ak8963_is_available(void) {
         // La comunicacion esta bien
         return MPU9250_OK;
     }
-
     return MPU9250_ERR;
 }
 
@@ -74,7 +85,6 @@ static inline mpu9250_status_t mpu9250_is_available(void) {
         // La comunicacion esta bien
         return MPU9250_OK;
     }
-
     return MPU9250_ERR;
 }
 
@@ -111,6 +121,75 @@ static inline void mpu9250_read_and_average(int16_t *accel_av, int16_t *gyro_av,
 }
 
 /**
+ * @brief Obtiene la resolucion del acelerometro a partir 
+ * de la configuracion elegida
+ * @param accel_fs_sel valor elegido para el registro
+ * @return valor de resolucion
+*/
+static float _mpu9250_get_accel_resolution(mpu9250_accel_fs_sel_t accel_fs_sel) {
+    // Posibles escalas del acelerometro
+    switch (accel_fs_sel) {
+        // Se calculan como la resolucion a fondo de escala FS sobre
+        // la resolucion del ADC (15 bits)
+        case A2G:
+            return 2.0 / 32768.0;
+        case A4G:
+            return 4.0 / 32768.0;
+        case A8G:
+            return 8.0 / 32768.0;
+        case A16G:
+            return 16.0 / 32768.0;
+        default:
+            return 0.0;
+    }
+}
+
+/**
+ * @brief Obtiene la resolucion del giroscopo a partir 
+ * de la configuracion elegida
+ * @param gyro_fs_sel valor elegido para el registro
+ valor elegido para el registro
+ * @return valor de resolucion
+*/
+static float _mpu9250_get_gyro_resolution(mpu9250_gyro_fs_sel_t gyro_fs_sel) {
+    // Posibles escalas del giroscopo
+    switch (gyro_fs_sel) {
+        // Se calculan como la resolucion a fondo de escala FS sobre
+        // la resolucion del ADC (15 bits)
+        case G250DPS:
+            return 250.0 / 32768.0;
+        case G500DPS:
+            return 500.0 / 32768.0;
+        case G1000DPS:
+            return 1000.0 / 32768.0;
+        case G2000DPS:
+            return 2000.0 / 32768.0;
+        default:
+            return 0.0;
+    }
+}
+
+static mpu9250_status_t _mpu9250_init(mpu9250_t mpu) {
+
+}
+
+/**
+ * @brief Devuelve una estructura por defecto para usar el MPU
+ * @return estructura tipo mpu9250_t
+*/
+mpu9250_t mpu9250_get_default_config(void) {
+    return (mpu9250_t) {
+        .scl_gpio = 5,
+        .sda_gpio = 4,
+        .i2c = i2c0,
+        .baudrate = 400000,
+        .mpu_address = MPU9250_ADDRESS,
+        .ak_address = AK8963_ADDRESS,
+        .settings = _settings,
+    };
+}
+
+/**
  * @brief Inicializa el MPU9250
  * @param mpu estructura de configuracion para el MPU
  * @return estado de la inicializacion. Devuelve OK si salio bien
@@ -137,7 +216,6 @@ mpu9250_status_t mpu9250_init(mpu9250_t mpu) {
             return MPU9250_NO_AK8963;
         }
     }
-
     // El dispositivo no esta bien conectado
     return MPU9250_ERR;
 }
