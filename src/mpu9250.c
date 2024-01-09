@@ -24,6 +24,11 @@ static inline void _mpu9250_read_and_average(int16_t *accel_av, int16_t *gyro_av
 static float _mpu9250_get_accel_resolution(mpu9250_accel_fs_sel_t accel_fs_sel);
 static float _mpu9250_get_gyro_resolution(mpu9250_gyro_fs_sel_t gyro_fs_sel);
 static void _mpu9250_init(void);
+static void _mpu9250_read_raw_data(int16_t *dst, uint8_t reg, uint8_t len);
+static inline void _mpu9250_read_raw_accel(int16_t *dst);
+static inline void _mpu9250_read_raw_temp(int16_t *dst);
+static inline void _mpu9250_read_raw_gyro(int16_t *dst);
+
 
 // Funciones publicas
 
@@ -179,6 +184,19 @@ void mpu9250_self_test(float *gyro_st_result, float *accel_st_result) {
         // Guardo valor final porcentual
         accel_st_result[i] = 100.0 * (accel_st_av[i] - accel_av[i]) / st_value;
     }
+}
+
+/**
+ * @brief Lee la temperatura corregida
+ * @return devuelve temperatura corregida
+*/
+float mpu9250_read_temperature(void) {
+    // Variable para guardar la temperatura
+    int16_t temp;
+    // Leo la temperatura sin ajustar
+    _mpu9250_read_raw_temp(&temp);
+    // Devuelvo temperatura corregida
+    return temp / 333.87 + 21.0;
 }
 
 // Funciones privadas
