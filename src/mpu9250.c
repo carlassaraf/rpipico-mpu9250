@@ -119,9 +119,15 @@ mpu9250_status_t mpu9250_init(mpu9250_t mpu) {
     gpio_pull_up(_mpu.scl_gpio);
     gpio_pull_up(_mpu.sda_gpio);
   	
-    // Verifico que el MPU9250 y el AK8963 esten en el bus
-    if(mpu9250_is_available() == MPU9250_OK && ak8963_is_available() == MPU9250_OK) {
-        return MPU9250_OK;
+    // Verifico que el MPU9250 este en el bus
+    if(mpu9250_is_available() == MPU9250_OK) {
+        // Verifico que el AK8963 este en el bus
+        if(ak8963_is_available() == MPU9250_OK) {
+            return MPU9250_OK;
+        }
+        else {
+            return MPU9250_NO_AK8963;
+        }
     }
 
     // El dispositivo no esta bien conectado
