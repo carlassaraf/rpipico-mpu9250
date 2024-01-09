@@ -348,3 +348,47 @@ static void _mpu9250_init(void) {
     _mpu9250_write_byte(addr, INT_ENABLE, 0x01);
     sleep_ms(100);
 }
+
+/**
+ * @brief Lee una cantidad de bytes y arma valores de 16 bits
+ * @param dst puntero a destino de los datos
+ * @param reg registro a partir del cual leer
+ * @param len cantidad de bytes a leer
+*/
+static void _mpu9250_read_raw_data(int16_t *dst, uint8_t reg, uint8_t len) {
+    // Array auxiliar
+    uint8_t raw[len];
+    // Leo la n cantidad de datos
+    _mpu9250_read_bytes(_mpu.mpu_address, reg, raw, len);
+    // Armo los datos de 16 bits
+    for(uint8_t i = 0; i < len / 2; i++) {
+        dst[i] = ((int16_t)raw[2 * i] << 8) | (int16_t)raw[2 * i + 1];        
+    }
+}
+
+/**
+ * @brief Lee datos del acelerometro
+ * @param dst puntero a destino donde guardar los datos
+*/
+static inline void _mpu9250_read_raw_accel(int16_t *dst) {
+    // Lee los datos del acelerometro
+    _mpu9250_read_raw_data(dst, ACCEL_XOUT_H, 6);
+}
+
+/**
+ * @brief Lee datos del sensor de temperatura
+ * @param dst puntero a destino donde guardar los datos
+*/
+static inline void _mpu9250_read_raw_temp(int16_t *dst) {
+    // Lee los datos del sensor de temperatura
+    _mpu9250_read_raw_data(dst, TEMP_OUT_H, 2);
+}
+
+/**
+ * @brief Lee datos del giroscopo
+ * @param dst puntero a destino donde guardar los datos
+*/
+static inline void _mpu9250_read_raw_gyro(int16_t *dst) {
+    // Lee los datos del giroscopo
+    _mpu9250_read_raw_data(dst, GYRO_XOUT_H, 6);
+}
