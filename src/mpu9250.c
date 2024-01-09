@@ -46,6 +46,10 @@ static inline void mpu9250_read_bytes(uint8_t addr, uint8_t reg, uint8_t *dst, u
     i2c_read_blocking(_mpu.i2c, addr, dst, len, false);
 }
 
+/**
+ * @brief Verifica que el AK8963 este en el bus
+ * @return status de la operacion. MPU9250_OK si esta el dispositivo
+*/
 static inline mpu9250_status_t ak8963_is_available(void) {
     // Leo el WHO_AM_I para verificar que la comunicacion esta OK
     volatile uint8_t ak_who_am_i = mpu9250_read_byte(_mpu.ak_address, WHO_AM_I_AK8963);
@@ -58,6 +62,10 @@ static inline mpu9250_status_t ak8963_is_available(void) {
     return MPU9250_ERR;
 }
 
+/**
+ * @brief Verifica que el MPU9250 este en el bus
+ * @return status de la operacion. MPU9250_OK si esta el dispositivo
+*/
 static inline mpu9250_status_t mpu9250_is_available(void) {
     // Leo el WHO_AM_I para verificar que la comunicacion esta OK
     volatile uint8_t mpu_who_am_i = mpu9250_read_byte(_mpu.mpu_address, WHO_AM_I_MPU9250);
