@@ -30,6 +30,7 @@ typedef struct {
 */
 typedef enum {
     MPU9250_OK,
+    MPU9250_NO_AK8963,
     MPU9250_ERR,
 } mpu9250_status_t;
 
@@ -43,8 +44,8 @@ static inline mpu9250_t mpu9250_get_default_config() {
         .sda_gpio = 4,
         .i2c = i2c0,
         .baudrate = 400000,
-        .ak_address = AK8963_ADDRESS,
-        .mpu_address = MPU9250_ADDRESS
+        .mpu_address = MPU9250_ADDRESS,
+        .ak_address = AK8963_ADDRESS
     };
 }
 
