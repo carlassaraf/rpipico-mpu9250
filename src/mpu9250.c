@@ -199,6 +199,40 @@ float mpu9250_read_temperature(void) {
     return temp / 333.87 + 21.0;
 }
 
+/**
+ * @brief Lee el valor de aceleracion
+ * @param dst puntero a destino donde guardar la aceleracion
+ * en X, Y, Z
+*/
+void mpu9250_read_accel(float *dst) {
+    // Obtengo resolucion de aceleracion
+    float accel_resolution = _mpu9250_get_accel_resolution(_mpu.settings.accel_fs_sel);
+    // Leo los datos del acelerometro
+    int16_t raw[3];
+    _mpu9250_read_raw_accel(raw);
+    // Calculo los valores reales de aceleracion
+    for(uint8_t i = 0; i < 3; i++) {
+        dst[i] = raw[i] * accel_resolution;
+    }
+}
+
+/**
+ * @brief Lee el valor de giroscopo
+ * @param dst puntero a destino donde guardar la velocidad
+ * angular en X, Y, Z
+*/
+void mpu9250_read_gyro(float *dst) {
+    // Obtengo resolucion de giroscopo
+    float gyro_resolution = _mpu9250_get_gyro_resolution(_mpu.settings.gyro_fs_sel);
+    // Leo los datos del giroscopo
+    int16_t raw[3];
+    _mpu9250_read_raw_gyro(raw);
+    // Calculo los valores reales del giroscopo
+    for(uint8_t i = 0; i < 3; i++) {
+        dst[i] = raw[i] * gyro_resolution;
+    }
+}
+
 // Funciones privadas
 
 /**
@@ -251,7 +285,7 @@ static inline void _mpu9250_read_bytes(uint8_t addr, uint8_t reg, uint8_t *dst, 
  * @param n_readings cantidad de lecturas
 */
 static inline void _mpu9250_read_and_average(int16_t *accel_av, int16_t *gyro_av, uint8_t n_readings) {
-    // Tomo 200 lecturas
+    // Tomo una cantidad de lecturas
     for(uint8_t i = 0; i < n_readings; i++) {
         // Variable para lectura de los 3 ejes
         uint8_t raw[6] = { 0 };

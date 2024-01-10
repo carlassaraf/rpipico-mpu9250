@@ -104,5 +104,7 @@ mpu9250_t mpu9250_get_default_config(void);
 mpu9250_status_t mpu9250_init(mpu9250_t mpu);
 void mpu9250_self_test(float *gyro_st_result, float *accel_st_result);
 float mpu9250_read_temperature(void);
+void mpu9250_read_accel(float *dst);
+void mpu9250_read_gyro(float *dst);
 
 #endif
