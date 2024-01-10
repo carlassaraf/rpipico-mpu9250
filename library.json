@@ -1,0 +1,22 @@
+{
+    "name": "RPi Pico MPU9250",
+    "version": "1.0.0",
+    "description": "Biblioteca para usar el MPU9250 con la Raspberry Pi Pico y su SDK",
+    "keywords": "rp2040, Raspberry Pi Pico, baremetal",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/carlassaraf/rpipico-mpu9250.git"
+    },
+    "authors":
+    [
+        {
+            "name": "Fabrizio Carlassara",
+            "email": "fabrizio.carlassara@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "homepage": "",
+    "frameworks": ["baremetal"],
+    "platforms": ["WizIO-pico"]
+}
