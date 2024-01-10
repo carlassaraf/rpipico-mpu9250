@@ -38,7 +38,7 @@ static inline void _mpu9250_read_raw_gyro(int16_t *dst);
 */
 static inline mpu9250_status_t ak8963_is_available(void) {
     // Leo el WHO_AM_I para verificar que la comunicacion esta OK
-    volatile uint8_t ak_who_am_i = _mpu9250_read_byte(_mpu.ak_address, WHO_AM_I_AK8963);
+    uint8_t ak_who_am_i = _mpu9250_read_byte(_mpu.ak_address, WHO_AM_I_AK8963);
     // Verifico que el valor este dentro de lo esperado
     if(ak_who_am_i == 0x48) {
         // La comunicacion esta bien
@@ -53,7 +53,7 @@ static inline mpu9250_status_t ak8963_is_available(void) {
 */
 static inline mpu9250_status_t mpu9250_is_available(void) {
     // Leo el WHO_AM_I para verificar que la comunicacion esta OK
-    volatile uint8_t mpu_who_am_i = _mpu9250_read_byte(_mpu.mpu_address, WHO_AM_I_MPU9250);
+    uint8_t mpu_who_am_i = _mpu9250_read_byte(_mpu.mpu_address, WHO_AM_I_MPU9250);
     // Verifico que el valor este dentro de lo esperado
     if(mpu_who_am_i == 0x71 || mpu_who_am_i == 0x73) {
         // La comunicacion esta bien
